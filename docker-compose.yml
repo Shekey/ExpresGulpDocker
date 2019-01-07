@@ -1,0 +1,11 @@
+version: "3"
+services:
+  app1:
+    restart: "no"  
+    build: .
+    command: npm run start
+    volumes:
+      - $PWD/app:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "4000:4000"
