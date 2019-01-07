@@ -2,11 +2,27 @@
 
 var gulp = require('gulp');
 var browserSync = require('browser-sync');
+var sass = require('gulp-sass');
 var nodemon = require('gulp-nodemon');
 
 // we'd need a slight delay to reload browsers
 // connected to browser-sync after restarting nodemon
 var BROWSER_SYNC_RELOAD_DELAY = 500;
+
+var browserFunction =  function() {
+  browserSync.init({
+    proxy: 'http://localhost:3000',
+    port: 4000,
+    open: false
+  });
+}
+var sassFunction = function () {
+  return gulp.src('scss/*.scss')
+              .pipe(sass())
+              .pipe(gulp.dest('css'))
+              .pipe(browserSync.reload({stream: true}));
+}
+
 
 gulp.task('nodemon', function (cb) {
   var called = false;
@@ -28,20 +44,11 @@ gulp.task('nodemon', function (cb) {
 });
 
 gulp.task('browser-sync', ['nodemon'], function () {
-
-  // for more browser-sync config options: http://www.browsersync.io/docs/options/
-  browserSync({
-    proxy: 'http://localhost:3000',
-    port: 4000,
-    open: false
-  });
+  browserFunction();
 });
 
 gulp.task('js',  function () {
   return gulp.src('*.js')
-    // do stuff to JavaScript files
-    //.pipe(uglify())
-    //.pipe(gulp.dest('...'));
 });
 
 gulp.task('css', function () {
@@ -54,7 +61,7 @@ gulp.task('bs-reload', function () {
 });
 
 gulp.task('default', ['browser-sync'], function () {
-  gulp.watch('*.js',   ['js', browserSync.reload]);
-  gulp.watch('*.css',  ['css']);
+  gulp.watch('js/*.js',   ['js', browserSync.reload]);
+  gulp.watch("scss/*.scss", sassFunction);
   gulp.watch('*.html', ['bs-reload']);
 });
