@@ -1,7 +1,6 @@
 'use strict';
 
 var express = require('express');
-var lib = require('./sqliteHelper/functions');
 var http = require('http');
 var path = require('path');
 var sqlite3 = require('sqlite3').verbose()
